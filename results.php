@@ -15,7 +15,11 @@ if (isset($_POST["submit"])) {
 
     $query = $_POST['query'];
     $qp = new queryProcessor($connection);
-    //get query results, perfom rnaking and put them in a list here
+    $results = $qp->process($query);//list of database rows containing :
+	//term,df (from stems table) ,tf,location,document url
+	
+    //get query results, perfom ranking and put them in a list here
+	//check display results to see how o access rows
 
 
     ?>
@@ -35,9 +39,15 @@ if (isset($_POST["submit"])) {
 
         <!--search results here -->
         <div>
+            <br>
             <?php
                 //display results here
-            echo $query;
+                while ($row =mysqli_fetch_assoc($results))
+                {
+                    echo $row['url'] . "<br>";
+                }
+                mysqli_free_result($results); //to free memory after displaying
+
 
             ?>
         </div>
