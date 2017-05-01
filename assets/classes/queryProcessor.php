@@ -5,6 +5,8 @@ class queryProcessor
 {
     private $connection;
     private $stopWords;
+    private $queryStems;
+    private $queryTokens;
 
     function __construct($c)
     {
@@ -18,14 +20,11 @@ class queryProcessor
     public function loadStopWords()
     {
         $starttime = microtime(true);
-        $count =0;
 
         $query = "SELECT stop_word from stop_words";
         $result = mysqli_query($this->connection , $query);
         while ($row = mysqli_fetch_array($result)) {
             $this->stopWords[]= $row[0];
-            //  echo end($stopWords) . "</br>";
-            $count=$count+1;
         }
         $endtime = microtime(true);
         $duration = $endtime - $starttime; //calculates total time taken
@@ -41,7 +40,11 @@ class queryProcessor
         if(!$phrase) //not surrounded by quotes
         {
             $rm=$this->removeStopWords($tokens); //remove stop words;
+            $this->queryTokens =$rm;
+
             $stems=$this->getStems($rm); //get list of stems in query;
+            $this->queryStems =$stems;
+
             $docs=$this->getDocuments($stems);
         }
         else{
@@ -141,12 +144,9 @@ class queryProcessor
 
 
         $in = join(',', $stems_sql);
-        $select = "SELECT a.term,a.df,b.tf,b.location,c.url FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
-        echo "<br>". $select;
+        $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
 
         $result=mysqli_query($this->connection,$select,MYSQLI_USE_RESULT); //to not buffer result set before usage
-        echo "hi";
-
 
         echo mysqli_error ( $this->connection ). "<br>";
         if(!$result)
@@ -160,6 +160,16 @@ class queryProcessor
 
 
 
+    }
+
+    public function getQueryStems()
+    {
+        return $this->queryStems;
+    }
+
+    public function getQueryTokens()
+    {
+        return $this->queryTokens;
     }
 
 

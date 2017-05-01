@@ -16,7 +16,10 @@ if (isset($_POST["submit"])) {
     $query = $_POST['query'];
     $qp = new queryProcessor($connection);
     $results = $qp->process($query);//list of database rows containing :
-	//term,df (from stems table) ,tf,location,document url
+	//term,stem,df (from stems table) ,tf,location,document url
+
+    //to get tokens $qp->getQueryTokens();
+    //to get stems $qp->getQueryStems();
 	
     //get query results, perfom ranking and put them in a list here
 	//check display results to see how o access rows
