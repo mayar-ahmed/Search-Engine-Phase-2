@@ -51,9 +51,10 @@ class queryProcessor
 
             $rm=$this->removeStopWords($tokens); //get tokens withot stop words
             $stop= $this->getStopWords($tokens); //get stop words to search for them
+
             //get docs which contain stop words and terms from daabase
-            //remove docs that don't contain the exact query
-            $docs=null;
+            $docs= $this->getPhraseDocuments($query, $rm,$stop);
+
         }
 
         //result set from database whether it's a phrase or normal query;
@@ -134,16 +135,9 @@ class queryProcessor
 
     public function getDocuments($stems)
     {
-        $documents=[];
-
-        $stems_sql=[];
-        foreach($stems as $s) {
-
-            $stems_sql[] = '\''.mysqli_escape_string($this->connection,$s).'\'';
-        }
 
 
-        $in = join(',', $stems_sql);
+        $in=$this->joinArray($stems);
         $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
 
         $result=mysqli_query($this->connection,$select,MYSQLI_USE_RESULT); //to not buffer result set before usage
@@ -160,6 +154,52 @@ class queryProcessor
 
 
 
+    }
+
+    public function joinArray($arr)
+    {
+        $arr_sql=[];
+        foreach($arr as $s) {
+
+            $arr_sql[] = '\''.mysqli_escape_string($this->connection,$s).'\'';
+        }
+
+
+        $in = join(',', $arr_sql);
+        return $in;
+
+    }
+    public function getPhraseDocuments($query,$tokens, $stopwords)
+    {
+
+        $tokens_sql = $this->joinArray($tokens); //terms after removing stop words
+        $stop_sql = $this->joinArray($stopwords); //stop words
+        $terms = count($tokens); //number of terms
+        $stops = count($stopwords); //number of stop words
+       // $query =mysqli_escape_string($this->connection,$query); //original query
+
+        $q = (trim($query,'"'));
+
+        $sql = "Select url from documents where id in (\n"
+            . "\n"
+            . "SELECT documents.id from (\n"
+            . " ( SELECT doc_id as id FROM stop_doc WHERE stop_word IN ($stop_sql) GROUP BY doc_id HAVING Count(doc_id) = {$stops})\n"
+            . " UNION ALL \n"
+            . " ( SELECT doc_id as id FROM term_doc WHERE term IN ($tokens_sql) GROUP BY doc_id HAVING Count(doc_id) = {$terms} )\n"
+            . ") AS documents GROUP BY id HAVING count(*) >= 2\n"
+            . ") \n"
+            . "and content like '%{$q}%'";
+
+        echo "<br>".$sql;
+
+        $result = mysqli_query($this->connection, $sql , MYSQLI_USE_RESULT);
+        if(!$result)
+            echo "error fetching results";
+        else{
+            echo "fetched result successfully";
+            return $result;
+
+        }
     }
 
     public function getQueryStems()

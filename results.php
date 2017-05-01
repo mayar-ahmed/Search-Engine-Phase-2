@@ -45,11 +45,15 @@ if (isset($_POST["submit"])) {
             <br>
             <?php
                 //display results here
+
+            {
                 while ($row =mysqli_fetch_assoc($results))
                 {
                     echo $row['url'] . "<br>";
                 }
                 mysqli_free_result($results); //to free memory after displaying
+            }
+
 
 
             ?>
