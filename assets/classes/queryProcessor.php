@@ -61,6 +61,13 @@ class queryProcessor
         return $docs;
     }
 
+    public function countWords ($query)
+    {
+        $query=strtolower($query);
+        $words = array_count_values(str_word_count($query, 1));
+        return $words;
+    }
+
 
 
     public function tokenizeQuery($q)
@@ -142,7 +149,7 @@ class queryProcessor
 
         $result=mysqli_query($this->connection,$select,MYSQLI_USE_RESULT); //to not buffer result set before usage
 
-        echo mysqli_error ( $this->connection ). "<br>";
+        //echo mysqli_error ( $this->connection ). "<br>";
         if(!$result)
             echo "error fetching results";
         else{
