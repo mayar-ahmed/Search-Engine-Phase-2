@@ -12,8 +12,7 @@ require_once('assets/classes/queryProcessor.php');
 require_once('assets/classes/relevanceRank.php');
 
 if (isset($_POST["submit"])) {
-
-
+    
     $query = $_POST['query'];
     $qp = new queryProcessor($connection);
     $results = $qp->process($query);//list of database rows containing :
@@ -54,20 +53,13 @@ if (isset($_POST["submit"])) {
             <br>
             <?php
                 //display results here
+
             /*
                 while ($row =mysqli_fetch_assoc($results))
                 {
                     echo $row['url'] . "<br>";
                 }
                 mysqli_free_result($results); //to free memory after displaying
-*/
-                /*
-                foreach ($rankedResults as $row) {
-                    echo($row['rank']);
-                    echo"   =>   ";
-                    echo ($row['url']);
-                    echo "<br>";
-                }
                 */
 
                 foreach ($rankedResults as $key => $value) {
@@ -76,6 +68,7 @@ if (isset($_POST["submit"])) {
                     echo ($key);
                     echo "<br>";
                 }
+
 
 
             ?>
