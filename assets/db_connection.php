@@ -1,7 +1,7 @@
 <?php
 	$dbhost="localhost";
 	$dbuser="root";
-	$dbpass="root";
+	$dbpass="";
 	$dbname="search_engine";
 
 // change these parameters based on your password and username

@@ -9,6 +9,7 @@ ob_start();
 
 require_once('assets/db_connection.php');
 require_once('assets/classes/queryProcessor.php');
+require_once('assets/classes/relevanceRank.php');
 
 if (isset($_POST["submit"])) {
 
@@ -20,6 +21,14 @@ if (isset($_POST["submit"])) {
 
     //to get tokens $qp->getQueryTokens();
     //to get stems $qp->getQueryStems();
+     $rankObject = new relevanceRank();
+     $temp = $qp->getQueryTokens();
+     echo "<br> From Processing: <br>";
+        foreach($temp as $q){
+            echo ($q);
+            echo "<br>";
+        }
+    $rankedResults = $rankObject->rank($results,$temp,$qp->getQueryStems());
 	
     //get query results, perfom ranking and put them in a list here
 	//check display results to see how o access rows
@@ -45,11 +54,28 @@ if (isset($_POST["submit"])) {
             <br>
             <?php
                 //display results here
+            /*
                 while ($row =mysqli_fetch_assoc($results))
                 {
                     echo $row['url'] . "<br>";
                 }
                 mysqli_free_result($results); //to free memory after displaying
+*/
+                /*
+                foreach ($rankedResults as $row) {
+                    echo($row['rank']);
+                    echo"   =>   ";
+                    echo ($row['url']);
+                    echo "<br>";
+                }
+                */
+
+                foreach ($rankedResults as $key => $value) {
+                    echo($value);
+                    echo"   =>   ";
+                    echo ($key);
+                    echo "<br>";
+                }
 
 
             ?>
