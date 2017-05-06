@@ -12,7 +12,7 @@ require_once('assets/classes/queryProcessor.php');
 require_once('assets/classes/relevanceRank.php');
 
 if (isset($_POST["submit"])) {
-    
+
     $query = $_POST['query'];
     $qp = new queryProcessor($connection);
     $results = $qp->process($query);//list of database rows containing :
