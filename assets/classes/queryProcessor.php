@@ -99,7 +99,7 @@ class queryProcessor
             }
         }
 
-        print_r($tokens);
+        //print_r($tokens);
         return $tokens;
 
     }
@@ -107,8 +107,8 @@ class queryProcessor
     public function removeStopWords($tokens){
 
             $difference= array_diff($tokens ,$this->stopWords);
-            echo "<br>";
-            print_r($difference);
+            /*echo "<br>";
+            print_r($difference);*/
             return $difference;
 
 
@@ -117,21 +117,21 @@ class queryProcessor
     public function getStopWords($tokens)
     {
         $intersection = array_intersect($tokens, $this->stopWords); //get intersection between tokens and stop words
-        echo "<br>";
-        print_r($intersection);
+        //echo "<br>";
+        //print_r($intersection);
         return $intersection;
     }
     public function getStems($tokens) //after removing stop words
     {
         $stems=[];
-        echo "<br>";
+        //echo "<br>";
         foreach ($tokens as $t){
             $s = PorterStemmer::Stem($t);
             $stems[]=$s;
         }
 
 
-        print_r($stems);
+        //print_r($stems);
         return $stems;
 
     }
@@ -148,10 +148,10 @@ class queryProcessor
         //echo mysqli_error ( $this->connection ). "<br>";
         if(!$result){
             if ($result!=null)
-                echo "error fetching result";
+                echo "databse error fetching result";
         }
         else{
-            echo "fetched result successfully";
+           // echo "fetched result successfully";
           return $result;
 
         }
@@ -198,10 +198,12 @@ class queryProcessor
         echo "<br>".$sql;
 
         $result = mysqli_query($this->connection, $sql , MYSQLI_USE_RESULT);
-        if(!$result)
-            echo "error fetching results";
-        else{
-            echo "fetched result successfully";
+        if(!$result ) {
+            if ($result != null)
+                echo "databse error fetching result";
+
+        } else{
+            //echo "fetched result successfully";
             return $result;
 
         }

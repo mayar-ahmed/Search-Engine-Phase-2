@@ -1,0 +1,70 @@
+
+@font-face {
+    font-family: "Kaushan Script";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Kaushan Script"), local("KaushanScript-Regular"), url("https://fonts.gstatic.com/s/kaushanscript/v4/qx1LSqts-NtiKcLw4N03IEd0sm1ffa_JvZxsF_BEwQk.woff2") format("woff2");
+}
+
+
+#logo2 {
+    font-family:"Kaushan Script";
+    margin-bottom:20px;
+    padding-right: 0;
+
+}
+#logo2 h2{
+    font-size: 4em;
+}
+#form{
+    margin-top:40px;
+    margin-left: 0;
+    padding-left: 0px;
+
+}
+
+.btn{
+    padding:0 2px 0 2px;
+    height:30px;
+    width:100px;
+}
+
+#top{
+    padding-left: 3%;
+    border-bottom: solid gainsboro 1px;
+    padding-bottom: 0px;
+    background-color: #FAFAFA;
+}
+
+.result{
+    padding-left: 4%;
+    width:70%;
+    margin-bottom:0;
+
+}
+
+.title h3{
+    color: #4e678b;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    text-transform: capitalize;
+
+}
+
+.title p{
+    color: #4CAF50;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.snippet {
+    font-size: 1.2em;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.snippet p{
+    margin-bottom: 0px;
+    padding-bottom: 0;
+    color: #6A6A6A;
+}
