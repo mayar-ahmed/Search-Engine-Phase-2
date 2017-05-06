@@ -17,23 +17,15 @@ if (isset($_POST["submit"])) {
     $qp = new queryProcessor($connection);
     $results = $qp->process($query);//list of database rows containing :
 	//term,stem,df (from stems table) ,tf,location,document url
+   while ($row =mysqli_fetch_assoc($results)){
+        echo($results['url']);
+        echo "<br>";
+    }
 
     //to get tokens $qp->getQueryTokens();
     //to get stems $qp->getQueryStems();
      $rankObject = new relevanceRank($connection);
-     $temp = $qp->getQueryStems();
-     echo "<br> From Processing: <br>";
-        foreach($temp as $k => $v){
-            echo "$k : $v";
-            echo "<br>";
-        }
-        $words = $qp->countWords ($query);
-        echo "<br>" . "QUERY:" . "<br>";
-        foreach ($words as $k => $v) {
-            if($k == "football")
-                echo "YES"."<br>";
-        }
-    $rankedResults = $rankObject->rank($results,$qp->countWords ($query),$qp->getQueryStems());
+    $rankedResults = $rankObject->rank($results,$qp->countWords ($query));
 	
     //get query results, perfom ranking and put them in a list here
 	//check display results to see how o access rows
