@@ -11,7 +11,7 @@ require_once('assets/db_connection.php');
 require_once('assets/classes/queryProcessor.php');
 
 if (isset($_POST["submit"])) {
-    
+
     $query = $_POST['query'];
     $qp = new queryProcessor($connection);
     $results = $qp->process($query);//list of database rows containing :

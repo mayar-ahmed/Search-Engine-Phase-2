@@ -19,16 +19,12 @@ class queryProcessor
 
     public function loadStopWords()
     {
-        $starttime = microtime(true);
 
         $query = "SELECT stop_word from stop_words";
         $result = mysqli_query($this->connection , $query);
         while ($row = mysqli_fetch_array($result)) {
             $this->stopWords[]= $row[0];
         }
-        $endtime = microtime(true);
-        $duration = $endtime - $starttime; //calculates total time taken
-        // echo $duration . " " . $count;
 
     }
 
@@ -145,7 +141,7 @@ class queryProcessor
 
 
         $in=$this->joinArray($stems);
-        $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
+        $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url,c.title,c.rank FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
 
         $result=mysqli_query($this->connection,$select,MYSQLI_USE_RESULT); //to not buffer result set before usage
 
