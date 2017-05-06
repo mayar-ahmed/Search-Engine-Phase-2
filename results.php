@@ -20,14 +20,20 @@ if (isset($_POST["submit"])) {
 
     //to get tokens $qp->getQueryTokens();
     //to get stems $qp->getQueryStems();
-     $rankObject = new relevanceRank();
-     $temp = $qp->getQueryTokens();
+     $rankObject = new relevanceRank($connection);
+     $temp = $qp->getQueryStems();
      echo "<br> From Processing: <br>";
-        foreach($temp as $q){
-            echo ($q);
+        foreach($temp as $k => $v){
+            echo "$k : $v";
             echo "<br>";
         }
-    $rankedResults = $rankObject->rank($results,$temp,$qp->getQueryStems());
+        $words = $qp->countWords ($query);
+        echo "<br>" . "QUERY:" . "<br>";
+        foreach ($words as $k => $v) {
+            if($k == "football")
+                echo "YES"."<br>";
+        }
+    $rankedResults = $rankObject->rank($results,$qp->countWords ($query),$qp->getQueryStems());
 	
     //get query results, perfom ranking and put them in a list here
 	//check display results to see how o access rows
@@ -61,14 +67,23 @@ if (isset($_POST["submit"])) {
                 }
                 mysqli_free_result($results); //to free memory after displaying
                 */
-
+/*
                 foreach ($rankedResults as $key => $value) {
                     echo($value);
                     echo"   =>   ";
                     echo ($key);
                     echo "<br>";
                 }
-
+*/
+                foreach($rankedResults as $doc=>$data)
+                {
+                    echo "<br>" . "$doc : " . "<br>";
+                    foreach($data as $k => $v)
+                    {
+                        echo "$k : $v" . "<br>";
+                    }
+                    echo "-------------------------------------";
+                }
 
 
             ?>
