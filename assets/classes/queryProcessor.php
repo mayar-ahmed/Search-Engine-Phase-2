@@ -141,13 +141,15 @@ class queryProcessor
 
 
         $in=$this->joinArray($stems);
-        $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url,c.title,c.rank FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
+        $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
 
         $result=mysqli_query($this->connection,$select,MYSQLI_USE_RESULT); //to not buffer result set before usage
 
         //echo mysqli_error ( $this->connection ). "<br>";
-        if(!$result)
-            echo "error fetching results";
+        if(!$result){
+            if ($result!=null)
+                echo "error fetching result";
+        }
         else{
             echo "fetched result successfully";
           return $result;

@@ -28,6 +28,7 @@ if (isset($_POST["submit"])) {
 
 
     <div class="container">
+
         <form class="form-inline" action="results.php" method="post">
             <div class="form-group">
 
@@ -44,6 +45,7 @@ if (isset($_POST["submit"])) {
             <br>
             <?php
                 //display results here
+            if($results!=null)
 
             {
                 while ($row =mysqli_fetch_assoc($results))
