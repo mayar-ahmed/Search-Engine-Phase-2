@@ -6,11 +6,13 @@ class queryProcessor
     private $stopWords;
     private $queryStems;
     private $queryTokens;
+    private $phraseQuery;
     function __construct($c)
     {
         $this->connection = $c;
         $this->stopWords= array();
         $this->loadStopWords();
+        $this->phraseQuery = 0;
     }
     public function loadStopWords()
     {
@@ -34,6 +36,7 @@ class queryProcessor
             $docs=$this->getDocuments($stems);
         }
         else{
+            $this->phraseQuery = 1;
             $rm=$this->removeStopWords($tokens); //get tokens withot stop words
             $stop= $this->getStopWords($tokens); //get stop words to search for them
             //get docs which contain stop words and terms from daabase
@@ -156,5 +159,8 @@ class queryProcessor
     public function getQueryTokens()
     {
         return $this->queryTokens;
+    }
+    public function isPhraseQuery(){
+        return $this->phraseQuery;
     }
 }

@@ -17,15 +17,11 @@ if (isset($_POST["submit"])) {
     $qp = new queryProcessor($connection);
     $results = $qp->process($query);//list of database rows containing :
 	//term,stem,df (from stems table) ,tf,location,document url
-   while ($row =mysqli_fetch_assoc($results)){
-        echo($results['url']);
-        echo "<br>";
-    }
-
     //to get tokens $qp->getQueryTokens();
     //to get stems $qp->getQueryStems();
-     $rankObject = new relevanceRank($connection);
-    $rankedResults = $rankObject->rank($results,$qp->countWords ($query));
+     $rankObject = new relevanceRank();
+     $rankObject -> db_connect();
+    $rankedResults = $rankObject->rank($results,$qp->countWords ($query),$qp->isPhraseQuery());
 	
     //get query results, perfom ranking and put them in a list here
 	//check display results to see how o access rows
@@ -52,7 +48,28 @@ if (isset($_POST["submit"])) {
             <br>
             <?php
                 //display results here
-            if($results!=null)
+            if($qp->isPhraseQuery())
+            {
+                 foreach($rankedResults as $key => $value)
+                {
+                    echo "<br>";
+                    foreach($value as $k => $v)
+                    echo ($v);
+                    echo "<br>";
+
+                }
+
+            }
+            else{
+            foreach ($rankedResults as $url => $rank) {
+            echo "$url" . "<br>";
+            echo "<br>";
+            echo "$rank" . "<br>";
+            echo "-------------------------------- " . "<br>";
+        }
+    }
+
+            //if($results!=null)
 
             /*
                 while ($row =mysqli_fetch_assoc($results))
@@ -69,15 +86,15 @@ if (isset($_POST["submit"])) {
                     echo "<br>";
                 }
 */
-                foreach($rankedResults as $doc=>$data)
+                /*
+                foreach($rankedResults as $doc=>$rank)
                 {
-                    echo "<br>" . "$doc : " . "<br>";
-                    foreach($data as $k => $v)
-                    {
-                        echo "$k : $v" . "<br>";
-                    }
+                    echo "<br>" . "$doc : ";
+                    echo($rank);
+                    echo "<br>";
                     echo "-------------------------------------";
                 }
+                */
 
 
             ?>
