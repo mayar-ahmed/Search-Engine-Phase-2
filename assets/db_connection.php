@@ -6,7 +6,7 @@
 
 // change these parameters based on your password and username
 	 $connection = mysqli_connect($dbhost , $dbuser , $dbpass , $dbname);
-global $connection;
+	 global $connection;
 	
 	
 	if (mysqli_connect_errno()){

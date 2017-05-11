@@ -109,7 +109,7 @@ class queryProcessor
     public function getDocuments($stems)
     {
         $in=$this->joinArray($stems);
-        $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
+        $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url,c.title,c.text,c.rank FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where a.stem IN ($in)";
         $result=mysqli_query($this->connection,$select,MYSQLI_USE_RESULT); //to not buffer result set before usage
         //echo mysqli_error ( $this->connection ). "<br>";
         if(!$result){
@@ -138,7 +138,7 @@ class queryProcessor
         $stops = count($stopwords); //number of stop words
        // $query =mysqli_escape_string($this->connection,$query); //original query
         $q = (trim($query,'"'));
-        $sql = "Select url from documents where id in (\n"
+        $sql = "Select url,title,rank,text from documents where id in (\n"
             . "\n"
             . "SELECT documents.id from (\n"
             . " ( SELECT doc_id as id FROM stop_doc WHERE stop_word IN ($stop_sql) GROUP BY doc_id HAVING Count(doc_id) = {$stops})\n"
@@ -147,7 +147,7 @@ class queryProcessor
             . ") AS documents GROUP BY id HAVING count(*) >= 2\n"
             . ") \n"
             . "and content like '%{$q}%'";
-        echo "<br>".$sql;
+        //echo "<br>".$sql;
         $result = mysqli_query($this->connection, $sql , MYSQLI_USE_RESULT);
         if(!$result ) {
             if ($result != null)

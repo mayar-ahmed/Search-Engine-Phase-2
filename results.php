@@ -57,16 +57,21 @@ if (isset($_POST["submit"])) {
 
         <?php
         //display results here
-        if ($results != null) {
+        if ($rankedResults != null) {
+            $urlE;
 
-            while ($row = mysqli_fetch_assoc($results)) {
-
+            //while ($row = mysqli_fetch_assoc($rankedResults)) {
+            foreach ($rankedResults as $url => $value) {
+                if($qp->isPhraseQuery())
+                    $urlE = $value['url'];
+                else
+                    $urlE = $url;
                 ?>
 
                 <div class="row result">
                     <div class="title">
-                        <h3><a href="#">Page title here</a></h3> <!-- page url and title here-->
-                        <p class="small"><?php echo $row['url']; ?></p>
+                        <h3><a href="<?php echo $urlE;?>"><?php echo $value['title'];?></a></h3> <!-- page url and title here-->
+                        <p class="small"><?php echo $urlE; ?></p>
                     </div>
                     <div class="snippet">
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -79,10 +84,13 @@ if (isset($_POST["submit"])) {
 
                 <?php
 
-        } else {
-            echo "<h3> No Results Found For Your Query</h3>";
+            }
+        } 
+        else {
 
-        }
+            echo "<h3> No Results Found For Your Query</h3>";
+        }?>
+
         <!--search results here -->
         <div>
             <br>
@@ -100,12 +108,13 @@ if (isset($_POST["submit"])) {
                 }
 
             }
+
             else{
-            foreach ($rankedResults as $url => $rank) {
+            foreach ($rankedResults as $url => $info) {
             echo "$url" . "<br>";
             echo "<br>";
-            echo "$rank" . "<br>";
-            echo "-------------------------------- " . "<br>";
+            echo ($info['score']);
+            echo "<br>" . "-------------------------------- " . "<br>";
         }
     }
 
@@ -135,7 +144,7 @@ if (isset($_POST["submit"])) {
                     echo "-------------------------------------";
                 }
                 */
-            }
+            
        
 
 
