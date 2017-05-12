@@ -67,6 +67,7 @@ if (isset($_POST["submit"])) {
                     $urlE = $value['url'];
                 else
                     $urlE = $url;
+			$snippets=snippet($qp->getQueryTokens(),$value['text']);
                 ?>
 
                 <div class="row result">
@@ -75,10 +76,12 @@ if (isset($_POST["submit"])) {
                         <p class="small"><?php echo $urlE; ?></p>
                     </div>
                     <div class="snippet">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                            aliquip ex ea commodo consequat..</p>
+                        <?php
+                        foreach($snippets as $s)
+						{	
+							echo "<p>...$s...</p>";
+						}
+					?>
 
                     </div>
                 </div>
