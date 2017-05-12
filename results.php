@@ -68,15 +68,17 @@ if (isset($_POST["submit"])) {
                     $urlE = $value['url'];
                 else
                     $urlE = $url;
-				
-			$snippets=snippet($qp->getQueryTokens(),$value['text']);
+			$pq=$qp->isPhraseQuery();
+			if(!$pq)
+			$snippets=snippet($qp->getQueryTokens(),$value['text'],$pq);
+			else $snippets=snippet($query,$value['text'],$pq);
                 ?>
 
                 <div class="row result">
                     <div class="title">
                         <h3><a href="<?php echo $urlE;?>"><?php echo $value['title'];?></a></h3> <!-- page url and title here-->
                         <p class="small"><?php echo $urlE; ?></p>
-						<?php echo ($value['score']);?>
+						<?php if(!$pq) echo ($value['score']);?>
 						<?php echo "<br>"?>
 						<?php echo ($value['rank']);?>
                     </div>
