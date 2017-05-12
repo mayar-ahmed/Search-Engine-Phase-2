@@ -106,6 +106,7 @@ class relevanceRank{
                     $ret[$url]['score']+=$score;
                 //$n += $score * $score;
             }
+			$ret[$url]['score'] = $ret[$url]['score'] * $ret[$url]['rank']; 
            // $n = sqrt($n);
             //$ret[$url]/=$n;
 
