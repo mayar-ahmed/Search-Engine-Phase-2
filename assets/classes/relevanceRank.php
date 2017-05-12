@@ -10,7 +10,7 @@ class relevanceRank{
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname="search_engine";
+        $dbname="searchengine2";
 
         // change these parameters based on your password and username
         $conn = mysqli_connect($servername , $username , $password , $dbname);
@@ -126,7 +126,7 @@ class relevanceRank{
         array_multisort($r, SORT_DESC, $ret);
 
         return $ret;
-
+/*
         foreach ($ret as $url => $rank) {
             echo($url);
             echo "<br>";
@@ -140,6 +140,7 @@ class relevanceRank{
             echo "$rank" . "<br>";
             echo "-------------------------------- " . "<br>";
         }
+        */
 
     //return $this->vectorSpaceModel($processed,$Query,$qVector);
 

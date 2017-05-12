@@ -132,12 +132,37 @@ class queryProcessor
     }
     public function getPhraseDocuments($query,$tokens, $stopwords)
     {
+        $c;
         $tokens_sql = $this->joinArray($tokens); //terms after removing stop words
         $stop_sql = $this->joinArray($stopwords); //stop words
         $terms = count($tokens); //number of terms
         $stops = count($stopwords); //number of stop words
+
+
        // $query =mysqli_escape_string($this->connection,$query); //original query
+        
         $q = (trim($query,'"'));
+        $sql = "Select url,title,rank,text from documents where id in (\n"
+            . "\n";
+        if($stops!=0 && $terms != 0)
+        {
+            $sql .= "SELECT documents.id from (\n"
+            . " ( SELECT doc_id as id FROM stop_doc WHERE stop_word IN ($stop_sql) GROUP BY doc_id HAVING Count(doc_id) = {$stops})\n"
+            . " UNION ALL \n"
+            . " ( SELECT doc_id as id FROM term_doc WHERE term IN ($tokens_sql) GROUP BY doc_id HAVING Count(doc_id) = {$terms} )\n"
+            . ") AS documents GROUP BY id HAVING count(*) >= 2\n"
+            . ") \n";
+            
+        }
+        else if($stops != 0){
+            $sql.= "SELECT doc_id as id FROM stop_doc WHERE stop_word IN ($stop_sql) GROUP BY doc_id HAVING Count(doc_id) = {$stops})\n";
+        }
+        else{
+            $sql.= "SELECT doc_id as id FROM term_doc WHERE term IN ($tokens_sql) GROUP BY doc_id HAVING Count(doc_id) = {$terms})\n";
+        }
+        $sql .= "and content like '%{$q}%'";
+
+        /*
         $sql = "Select url,title,rank,text from documents where id in (\n"
             . "\n"
             . "SELECT documents.id from (\n"
@@ -148,6 +173,7 @@ class queryProcessor
             . ") \n"
             . "and content like '%{$q}%'";
         //echo "<br>".$sql;
+        */
         $result = mysqli_query($this->connection, $sql , MYSQLI_USE_RESULT);
         if(!$result ) {
             if ($result != null)

@@ -59,7 +59,8 @@ if (isset($_POST["submit"])) {
         //display results here
         if ($rankedResults != null) {
             $urlE;
-
+            //echo (count($rankedResults));
+            //echo "<br>";
             //while ($row = mysqli_fetch_assoc($rankedResults)) {
             foreach ($rankedResults as $url => $value) {
                 if($qp->isPhraseQuery())
@@ -96,6 +97,7 @@ if (isset($_POST["submit"])) {
             <br>
             <?php
                 //display results here
+            /*
             if($qp->isPhraseQuery())
             {
                  foreach($rankedResults as $key => $value)
@@ -117,6 +119,7 @@ if (isset($_POST["submit"])) {
             echo "<br>" . "-------------------------------- " . "<br>";
         }
     }
+    */
 
             //if($results!=null)
 
