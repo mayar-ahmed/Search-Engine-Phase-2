@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/index.css">
@@ -16,6 +17,7 @@ require_once('assets/functions.php');
 require_once('assets/db_connection.php');
 require_once('assets/classes/queryProcessor.php');
 require_once('assets/classes/relevanceRank.php');
+require_once('assets/snippet.php');
 
 if (isset($_POST["submit"])) {
 
@@ -28,9 +30,9 @@ if (isset($_POST["submit"])) {
      $rankObject = new relevanceRank();
      $rankObject -> db_connect();
     $rankedResults = $rankObject->rank($results,$qp->countWords ($query),$qp->isPhraseQuery());
+	
     //get query results, perfom ranking and put them in a list here
     //check display results to see how o access rows
-
 
     ?>
 
@@ -59,14 +61,14 @@ if (isset($_POST["submit"])) {
         //display results here
         if ($rankedResults != null) {
             $urlE;
-            //echo (count($rankedResults));
-            //echo "<br>";
+
             //while ($row = mysqli_fetch_assoc($rankedResults)) {
             foreach ($rankedResults as $url => $value) {
                 if($qp->isPhraseQuery())
                     $urlE = $value['url'];
                 else
                     $urlE = $url;
+				
 			$snippets=snippet($qp->getQueryTokens(),$value['text']);
                 ?>
 
@@ -74,9 +76,12 @@ if (isset($_POST["submit"])) {
                     <div class="title">
                         <h3><a href="<?php echo $urlE;?>"><?php echo $value['title'];?></a></h3> <!-- page url and title here-->
                         <p class="small"><?php echo $urlE; ?></p>
+						<?php echo ($value['score']);?>
+						<?php echo "<br>"?>
+						<?php echo ($value['rank']);?>
                     </div>
                     <div class="snippet">
-                        <?php
+					<?php
                         foreach($snippets as $s)
 						{	
 							echo "<p>...$s...</p>";
@@ -100,7 +105,7 @@ if (isset($_POST["submit"])) {
             <br>
             <?php
                 //display results here
-            /*
+				/*
             if($qp->isPhraseQuery())
             {
                  foreach($rankedResults as $key => $value)
@@ -122,8 +127,7 @@ if (isset($_POST["submit"])) {
             echo "<br>" . "-------------------------------- " . "<br>";
         }
     }
-    */
-
+*/
             //if($results!=null)
 
             /*
