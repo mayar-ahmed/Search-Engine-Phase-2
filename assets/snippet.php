@@ -6,7 +6,7 @@ include_once 'classes/PorterStemmer.php';
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname="search_engine";
+        $dbname="se2";
 
         // change these parameters based on your password and username
         $conn = mysqli_connect($servername , $username , $password , $dbname);
@@ -19,11 +19,12 @@ include_once 'classes/PorterStemmer.php';
         }
         return $conn;
     }
-function snippet($substrs,$document){
+function snippet($query,$document,$pq){
 	$conn=db_connect();
-	/*$substrs=explode(" ",$query);*/
+	$substrs=$query;
 	$snippets=array();
 	$size=0;
+	if(!$pq){
 		foreach ($substrs as $ss)
 		{
 				/*check if word exists in document */
@@ -70,6 +71,21 @@ function snippet($substrs,$document){
 					}
 				}
 		}
+	}
+	else{
+		
+			$firstInd=stripos($document,trim($substrs,'"'));
+				if($firstInd!=false)
+				{
+					/*get some text around the word*/
+					$start=$firstInd;
+					if($firstInd-20>0)
+						$start=$firstInd-20;
+					
+					$snippets[$size]=substr($document,$start,100);
+					$size++;
+				}
+	}
 		return $snippets;
 }
 ?>
