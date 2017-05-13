@@ -6,11 +6,11 @@ include_once 'classes/PorterStemmer.php';
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname="searchengine2";
+        $dbname="search_engine";
 
         // change these parameters based on your password and username
         $conn = mysqli_connect($servername , $username , $password , $dbname);
-        mysqli_set_charset($conn,"utf8");
+        
 
 
         if (mysqli_connect_errno()){
@@ -19,26 +19,32 @@ include_once 'classes/PorterStemmer.php';
         }
         return $conn;
     }
-function snippet($query,$document,$pq){
+function snippet($query,$doc,$pq){
 	$conn=db_connect();
 	$substrs=$query;
 	$snippets=array();
 	$size=0;
+	$document=utf8_decode($doc);
 	if(!$pq){
 		foreach ($substrs as $ss)
 		{
 				/*check if word exists in document */
+				
 				$firstInd=stripos($document,$ss);
-				if($firstInd!=false)
+				
+				if($firstInd!==false)
 				{
 					/*get some text around the word*/
 					$start=$firstInd;
-					if($firstInd-20>0)
-						$start=$firstInd-20;
-					$snippets[$size]=substr($document,$start,100);
+					if($firstInd-200>0)
+						$start=$firstInd-200;
+					
+					$snippets[$size]=substr($document,$start,300);
+					
+					
 					$size++;
 					/*check if 3 snippets */
-					if($size==2)
+					if($size==3)
 						return $snippets;
 				}
 				else{
@@ -54,16 +60,17 @@ function snippet($query,$document,$pq){
 						
 						/*check if word exists in document */
 						$firstInd=stripos($document,$word);
-						if($firstInd!=false)
+						if($firstInd!==false)
 						{	
 							/*get some text around the word*/
 							$start=$firstInd;
-							if($firstInd-20>0)
-							$start=$firstInd-20;
-							$snippets[$size]=substr($document,$start,100);
+							if($firstInd-200>0)
+								$start=$firstInd-200;
+							$snippets[$size]=substr($document,$start,300);
+							
 							$size++;
 							/*check if 3 snippets */
-							if($size==2)
+							if($size==3)
 								return $snippets;
 							if(count>1)
 								break; /*to check other words in the query*/
@@ -73,16 +80,17 @@ function snippet($query,$document,$pq){
 		}
 	}
 	else{
-		
+		/* if phrase query*/
 			$firstInd=stripos($document,trim($substrs,'"'));
-				if($firstInd!=false)
+				if($firstInd!==false)
 				{
 					/*get some text around the word*/
 					$start=$firstInd;
-					if($firstInd-20>0)
-						$start=$firstInd-20;
+					if($firstInd-200>0)
+						$start=$firstInd-200;
 					
-					$snippets[$size]=substr($document,$start,100);
+					$snippets[$size]=substr($document,$start,300);
+					
 					$size++;
 				}
 	}
