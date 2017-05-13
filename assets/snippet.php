@@ -6,11 +6,11 @@ include_once 'classes/PorterStemmer.php';
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname="se2";
+        $dbname="searchengine2";
 
         // change these parameters based on your password and username
         $conn = mysqli_connect($servername , $username , $password , $dbname);
-        
+        mysqli_set_charset($conn,"utf8");
 
 
         if (mysqli_connect_errno()){

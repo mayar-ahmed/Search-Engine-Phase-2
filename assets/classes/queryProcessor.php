@@ -7,12 +7,14 @@ class queryProcessor
     private $queryStems;
     private $queryTokens;
     private $phraseQuery;
+    private $stopsOnly;
     function __construct($c)
     {
         $this->connection = $c;
         $this->stopWords= array();
         $this->loadStopWords();
         $this->phraseQuery = 0;
+        $this->stopsOnly = 0;
     }
     public function loadStopWords()
     {
@@ -39,7 +41,9 @@ class queryProcessor
             $this->phraseQuery = 1;
             $rm=$this->removeStopWords($tokens); //get tokens withot stop words
             $stop= $this->getStopWords($tokens); //get stop words to search for them
-            //get docs which contain stop words and terms from daabase
+            if(count($rm) == 0)
+                $this->stopsOnly = 1;
+            //get docs which contain stop words and terms from database
             $docs= $this->getPhraseDocuments($query, $rm,$stop);
         }
         //result set from database whether it's a phrase or normal query;
@@ -142,7 +146,10 @@ class queryProcessor
        // $query =mysqli_escape_string($this->connection,$query); //original query
         
         $q = (trim($query,'"'));
-        $sql = "Select url,title,rank,text from documents where id in (\n"
+       /* $sql = "Select url,title,rank,text from documents where id in (\n"
+            . "\n";
+            */
+            $sql = "Select url,title,rank,text,id from documents where id in (\n"
             . "\n";
         if($stops!=0 && $terms != 0)
         {
@@ -181,7 +188,20 @@ class queryProcessor
 
         } else{
             //echo "fetched result successfully";
-            return $result;
+            $data = array();
+            while($row = mysqli_fetch_assoc($result))
+            {
+                $data[] = $row['id'];
+            }
+            $data = $this->joinArray($data);
+            if($terms!=0)
+            {
+                $select = "SELECT a.term, a.stem,a.df,b.tf,b.location,c.url,c.title,c.text,c.rank FROM terms a JOIN term_doc b ON a.term = b.term JOIN documents c ON b.doc_id = c.id where c.id IN ($data) and a.term in($tokens_sql)";
+                $results=mysqli_query($this->connection,$select,MYSQLI_USE_RESULT); //to not buffer result set before usage
+                return $results;
+            }
+            else
+                return $result;
         }
     }
     public function getQueryStems()
@@ -194,5 +214,8 @@ class queryProcessor
     }
     public function isPhraseQuery(){
         return $this->phraseQuery;
+    }
+    public function isStopsOnly(){
+        return $this->stopsOnly;
     }
 }

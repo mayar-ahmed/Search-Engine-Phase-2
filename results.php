@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
 	
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
@@ -16,24 +16,17 @@ ob_start();
 require_once('assets/functions.php');
 require_once('assets/db_connection.php');
 require_once('assets/classes/queryProcessor.php');
-require_once('assets/classes/relevanceRank.php');
+require_once('assets/classes/rank.php');
 require_once('assets/snippet.php');
 
 if (isset($_POST["submit"])) {
 
     $query = $_POST['query'];
     $qp = new queryProcessor($connection);
-    $results = $qp->process($query);//list of database rows containing :
-	//term,stem,df (from stems table) ,tf,location,document url
-    //to get tokens $qp->getQueryTokens();
-    //to get stems $qp->getQueryStems();
-     $rankObject = new relevanceRank();
-     $rankObject -> db_connect();
-    $rankedResults = $rankObject->rank($results,$qp->countWords ($query),$qp->isPhraseQuery());
-	
-    //get query results, perfom ranking and put them in a list here
-    //check display results to see how o access rows
-
+    $results = $qp->process($query);//list of database rows containing : term,stem,df (from stems table) ,tf,location,document url
+    $rankObject = new rank();
+    $rankObject -> db_connect();
+    $rankedResults = $rankObject->rankDocuments($results,$qp->countWords ($query),$qp->isPhraseQuery(),$qp->isStopsOnly()); //Returns the documents ranked
     ?>
 
 
@@ -60,33 +53,29 @@ if (isset($_POST["submit"])) {
         <?php
         //display results here
         if ($rankedResults != null) {
-            $urlE;
-
-            //while ($row = mysqli_fetch_assoc($rankedResults)) {
             foreach ($rankedResults as $url => $value) {
-                if($qp->isPhraseQuery())
-                    $urlE = $value['url'];
-                else
-                    $urlE = $url;
 			$pq=$qp->isPhraseQuery();
 			if(!$pq)
 			$snippets=snippet($qp->getQueryTokens(),$value['text'],$pq);
-			else $snippets=snippet($query,$value['text'],$pq);
+			else 
+                $snippets=snippet($query,$value['text'],$pq);
                 ?>
 
                 <div class="row result">
                     <div class="title">
-                        <h3><a href="<?php echo $urlE;?>"><?php echo $value['title'];?></a></h3> <!-- page url and title here-->
-                        <p class="small"><?php echo $urlE; ?></p>
-						<?php if(!$pq) echo ($value['score']);?>
-						<?php echo "<br>"?>
-						<?php echo ($value['rank']);?>
+                        <h3><a href="<?php echo $url;?>"><?php echo $value['title'];?></a></h3> <!-- page url and title here-->
+                        <p class="small"><?php echo $url; ?></p>
+						<?php /*echo ($value['score']);
+						      echo "<br>";
+						      echo ($value['rank']);*/?>
                     </div>
                     <div class="snippet">
 					<?php
                         foreach($snippets as $s)
-						{	
-							echo "<p>...$s...</p>";
+						{	$i1 = strpos($s, ' ');
+                            $i2 = strrpos($s,' ');
+                            $s2 = substr($s, $i1,$i2-$i1);
+							echo "<p>...$s2...</p>";
 						}
 					?>
 
@@ -101,71 +90,6 @@ if (isset($_POST["submit"])) {
 
             echo "<h3> No Results Found For Your Query</h3>";
         }?>
-
-        <!--search results here -->
-        <div>
-            <br>
-            <?php
-                //display results here
-				/*
-            if($qp->isPhraseQuery())
-            {
-                 foreach($rankedResults as $key => $value)
-                {
-                    echo "<br>";
-                    foreach($value as $k => $v)
-                    echo ($v);
-                    echo "<br>";
-
-                }
-
-            }
-
-            else{
-            foreach ($rankedResults as $url => $info) {
-            echo "$url" . "<br>";
-            echo "<br>";
-            echo ($info['score']);
-            echo "<br>" . "-------------------------------- " . "<br>";
-        }
-    }
-*/
-            //if($results!=null)
-
-            /*
-                while ($row =mysqli_fetch_assoc($results))
-                {
-                    echo $row['url'] . "<br>";
-                }
-                mysqli_free_result($results); //to free memory after displaying
-                */
-/*
-                foreach ($rankedResults as $key => $value) {
-                    echo($value);
-                    echo"   =>   ";
-                    echo ($key);
-                    echo "<br>";
-                }
-*/
-                /*
-                foreach($rankedResults as $doc=>$rank)
-                {
-                    echo "<br>" . "$doc : ";
-                    echo($rank);
-                    echo "<br>";
-                    echo "-------------------------------------";
-                }
-                */
-            
-       
-
-
-        ?>
-
-        <!--search results here -->
-
-
-    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
