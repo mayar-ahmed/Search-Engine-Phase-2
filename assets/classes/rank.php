@@ -85,7 +85,7 @@ class rank{
             }
 
             //Calculating Score for each query term
-            //Location: 0.75 - 0.5 - 0.25
+            //Location Weight: 0.9 - 0.4 - 0.1
             //Processed[url] = {q1->score, q2->score, ..}
             if( (isset($processed[$row['url']])) && (isset($processed[$row['url']][$q])) )
             {
@@ -110,7 +110,7 @@ class rank{
                 else
                     $rankedDocs[$url]['score']+=$score;
             }
-			//$rankedDocs[$url]['score'] = $rankedDocs[$url]['score'] * $rankedDocs[$url]['rank']; 
+			$rankedDocs[$url]['score'] = $rankedDocs[$url]['score'] * $rankedDocs[$url]['rank']; 
         }
         //For phrase queries, number of query terms has no weight (Document already has all query terms)
         if(!$pq)
