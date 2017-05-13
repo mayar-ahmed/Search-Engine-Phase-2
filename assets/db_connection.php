@@ -2,7 +2,7 @@
 	$dbhost="localhost";
 	$dbuser="root";
 	$dbpass="";
-	$dbname="searchengine2";
+	$dbname="search_engine";
 
 // change these parameters based on your password and username
 	 $connection = mysqli_connect($dbhost , $dbuser , $dbpass , $dbname);

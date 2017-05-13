@@ -167,7 +167,7 @@ class queryProcessor
         else{
             $sql.= "SELECT doc_id as id FROM term_doc WHERE term IN ($tokens_sql) GROUP BY doc_id HAVING Count(doc_id) = {$terms})\n";
         }
-        $sql .= "and content like '%{$q}%'";
+        $sql .= "and text  REGEXP \"[[:<:]]{$q}[[:>:]]\"";
 
         /*
         $sql = "Select url,title,rank,text from documents where id in (\n"
