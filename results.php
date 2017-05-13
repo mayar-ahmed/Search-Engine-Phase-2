@@ -39,7 +39,7 @@ if (isset($_POST["submit"])) {
 
                 <div class="form-group">
 
-                    <input name="query" type="text" placeholder="Enter Search query" class="form-control" size="50"/>
+                    <input name="query" type="text" value="<?php echo($query) ?>" placeholder="Enter Search query" class="form-control" size="50"/>
                 </div>
 
                 <div class="form-group ">
