@@ -50,6 +50,8 @@ class rank{
 
             return $Docs;
         }
+        if(!$Docs)
+            return;
         //Iterate on fetched results    
 		while ($row = mysqli_fetch_assoc($Docs))
     	{   
