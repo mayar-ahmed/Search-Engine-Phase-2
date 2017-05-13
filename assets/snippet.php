@@ -6,7 +6,7 @@ include_once 'classes/PorterStemmer.php';
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname="search_engine";
+        $dbname="se2";
 
         // change these parameters based on your password and username
         $conn = mysqli_connect($servername , $username , $password , $dbname);
@@ -43,24 +43,25 @@ function snippet($query,$doc,$pq){
 					
 					
 					$size++;
-					/*check if 3 snippets */
-					if($size==3)
+					/*check if 2 snippets */
+					if($size==2)
 						return $snippets;
 				}
-				else{
+				else {
 					/*get the words of the same stem*/
 					$stem=PorterStemmer::Stem($ss);
 					
-					$words=mysqli_query($conn, "select term from terms where stem=$stem");
+
+					$words=mysqli_query($conn, "select term from terms where stem= '$stem' ");
 					
 					if(!$words)
 						continue;
-					while($word=mysqli_fetch_assoc($words))
+					while($word = mysqli_fetch_array($words))
 					{
 						
 						/*check if word exists in document */
-						$firstInd=stripos($document,$word);
-						if($firstInd!==false)
+						$firstInd=stripos($document,$word["term"]);
+						if($firstInd!==false) //exist is doc
 						{	
 							/*get some text around the word*/
 							$start=$firstInd;
@@ -69,11 +70,10 @@ function snippet($query,$doc,$pq){
 							$snippets[$size]=substr($document,$start,300);
 							
 							$size++;
-							/*check if 3 snippets */
-							if($size==3)
+							/*check if 2 snippets */
+							if($size==2)
 								return $snippets;
-							if(count>1)
-								break; /*to check other words in the query*/
+							
 						}
 					}
 				}
